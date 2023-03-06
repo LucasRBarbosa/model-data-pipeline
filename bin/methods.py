@@ -101,5 +101,6 @@ def get_products_by_category(category_id, access_token, refresh_token):
 def create_result_df(data_df, currency_df):
     merged_df = pd.merge(data_df, currency_df[['currency', 'obs_value', 'time_period']], left_on='currency',right_on='currency', how='left')
     merged_df['price_euro'] = merged_df['price'] / merged_df['obs_value']
-    merged_df.to_csv('end_result.csv')
+    # merged_df.to_csv('end_result.csv') # --> Uncomment this line to save the output df as an csv
+    print("Completed!")
     return merged_df
