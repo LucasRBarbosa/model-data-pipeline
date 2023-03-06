@@ -1,4 +1,4 @@
-# Ecommerce Project API
+# Ecommerce API (Data Extraction and Transformation)
 ## Description
 
 This Python project makes use of two APIs to retrieve data, specifically:
@@ -82,3 +82,24 @@ python3 main.py
 The program can be run by executing the main.py file which will give the main dataframe output. 
 
 The program will authenticate the user using the given credentials, and obtain an access token. If the access token has expired, the program will refresh it using the refresh token. If a user does not exist with the given credentials, the program will create a new user with the given information.
+
+-------
+# Data Engineering in Production
+
+Let's talk about releasing in prod:
+
+__*Using typical sales data as an example, how would you ensure that a data pipeline is kept up to date with accurate data? What tools or process might you use so that sales data is updated daily?*__
+
+To ensure that a data pipeline is kept up to date with accurate sales data, there are several steps and tools that can be used, but assuming it's an API or a database report we could orchestrate a process using Apache Airflow to automate a pipeline to extract the data source using the k8s (kubernetes) operator to run the given project, giving us monitoring and alerting capabilities and integration with other systems. If the source it's too large, to avoid a overusing the resources from the Airflow Cluster, we could combine airflow with an EMR cluster to scale the capabilities of the ingestion pipeline and also persist/store data in s3.
+
+![alt text](docs/Diagram1.png "Diagram 1")
+
+__*Our sales and product data is constantly changing - returns can affect previous sales, pricing changes can affect product data tables, etc. - how would you go about building a data pipeline that is able to add new data while also changing or updating existing data that has changed at the source system?*__
+
+We could build a data pipeline that can handle changing or updating existing data using "incremental loading", some process of CDC (if the source system to be captured supports it) or some platform of stream. CDC tracks changes made to data sources in real-time and captures only the changed data, while data synchronization compares data between the source and target systems and identifies any differences that need to be updated. Assuming that we are implementing a pipeline using either Kinesis, here's an example:
+
+1. Data is generated from a web application and sent to Kinesis producer via an API endpoint.
+2. Kinesis producer sends the data to a Kinesis data stream.
+3. AWS Lambda function reads the data from the data stream and processes it.
+4. The processed data is sent to an Amazon S3 bucket for storage and analysis.
+5. Amazon Redshift or Amazon Athena can be used to query and analyze the data stored in S3.
